@@ -1,0 +1,30 @@
+{
+  "name": "content-generator",
+  "version": "0.0.0",
+  "description": "Consume HTML from Kafka messages, transform to AMP HTML, produce",
+  "main": "dist/index.js",
+  "repository": "git@github.com:knamp/content-generator.git",
+  "author": "Hans Christian Reinl <info@drublic.de>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "yarn test --watch",
+    "ts:lint": "tslint -c tslint.json 'lib/**/*.ts'",
+    "ts:build": "rm -rf dist/ && tsc -p tsconfig.json",
+    "ts:watch": "yarn ts:build --watch",
+    "build": "yarn ts:build",
+    "prepublishOnly": "yarn build"
+  },
+  "dependencies": {
+    "log": "^1.4.0",
+    "sinek": "^6.14.0"
+  },
+  "devDependencies": {
+    "@types/es6-promise": "^3.3.0",
+    "@types/node": "^9.4.6",
+    "concurrently": "^3.5.1",
+    "jest": "^22.4.2",
+    "tslint": "^5.9.1",
+    "typescript": "^2.7.2"
+  }
+}
