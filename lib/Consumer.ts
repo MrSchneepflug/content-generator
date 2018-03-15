@@ -1,4 +1,7 @@
-import Ampli, { ContextInterface, OptionsInterface } from "ampli";
+import Ampli, {
+  ContextInterface,
+  OptionsInterface,
+} from "ampli";
 import { NConsumer as SinekConsumer } from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
