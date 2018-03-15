@@ -14,11 +14,7 @@
     "ts:build": "rm -rf dist/ && tsc -p tsconfig.json",
     "ts:watch": "yarn ts:build --watch",
     "build": "yarn ts:build",
-    "prepublishOnly": "yarn build",
-    "kafka:start": "./node_modules/sinek/kafka-setup/start.sh",
-    "kafka:stop": "./node_modules/sinek/kafka-setup/stop.sh",
-    "kafka:logs": "docker-compose --file ./node_modules/sinek/kafka-setup/docker-compose.yml logs -f",
-    "kafka:console": "./node_modules/sinek/kafka-setup/kafka-console.sh"
+    "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "ampli": "^0.0.0",
