@@ -9,6 +9,7 @@ export default interface ConfigInterface {
   consumeWithBackpressure?: boolean;
   logger?: LoggerInterface | undefined;
   workerPerPartition?: number;
+  produceFlushEveryMs?: number;
   options?: {
     ssl?: boolean,
     sslOptions?: {

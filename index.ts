@@ -1,4 +1,6 @@
 import ConfigInterface from "./lib/interfaces/ConfigInterface";
+
+import Connector from "./lib/Connector";
 import Logger, { set as setLogger } from "./lib/Logger";
 
 const defaultOptions: ConfigInterface = {
@@ -22,6 +24,7 @@ const defaultOptions: ConfigInterface = {
     retryMinTimeout: 250,
     sessionTimeout: 8000,
   },
+  produceFlushEveryMs: 1000,
   produceTo: "produce-topic",
   workerPerPartition: 1,
 };
@@ -32,4 +35,6 @@ export default (options: ConfigInterface) => {
   if (config.logger) {
     setLogger(config.logger);
   }
+
+  new Connector(config).connect();
 };
