@@ -20,6 +20,9 @@ export default class Producer {
     }
   }
 
+  /**
+   * Initially connect to producer
+   */
   public async connect(): Promise<void> {
     try {
       await this.producer.connect();
@@ -32,6 +35,9 @@ export default class Producer {
     this.producer.on("error", this.handleError);
   }
 
+  /**
+   * Adding a new message object
+   */
   public add(message: ProducerMessageInterface): void {
     Producer.messages.push(message);
 
@@ -40,6 +46,9 @@ export default class Producer {
     }
   }
 
+  /**
+   * Flushes messages to topic producer
+   */
   private async flush(): Promise<void> {
     for (const message of Producer.messages) {
       try {
@@ -56,6 +65,9 @@ export default class Producer {
     }
   }
 
+  /**
+   * Produce a single message
+   */
   private async produce(message: ProducerMessageInterface): Promise<void> {
     try {
       const messageString: string = JSON.stringify(message);
@@ -65,6 +77,9 @@ export default class Producer {
     }
   }
 
+  /**
+   * If there is an error, please report it
+   */
   private handleError(error: Error): void {
     Logger.error(error);
   }
