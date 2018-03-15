@@ -1,20 +1,26 @@
 import Ampli, { ContextInterface, OptionsInterface } from "ampli";
-import { SinekConsumer } from "sinek";
+import { NConsumer as SinekConsumer } from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ConsumerMessageInterface from "./interfaces/ConsumerMessageInterface";
+import LoggerInterface from "./interfaces/LoggerInterface";
+import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 import Logger from "./Logger";
+import Producer from "./Producer";
 
 export default class Consumer {
   private consumer: SinekConsumer;
 
-  constructor(public config: ConfigInterface) {
+  constructor(
+    private publish: (message: ProducerMessageInterface) => void,
+    private config: ConfigInterface,
+  ) {
     const { consumeFrom } = config;
 
     this.consumer = new SinekConsumer(consumeFrom, config);
   }
 
-  private async connect(): Promise<void> {
+  public async connect(): Promise<void> {
     try {
       await this.consumer.connect(this.config.consumeWithBackpressure);
     } catch (error) {
@@ -46,9 +52,22 @@ export default class Consumer {
     const ampli: Ampli = new Ampli({
       logger: Logger,
     });
-    const amp: string = await ampli.transform(message.content);
+    let amp: string = "";
 
-    // Produce to topic
+    try {
+      amp = await ampli.transform(message.content);
+    } catch (err) {
+      Logger.error("transformation with ampli failed", err);
+    }
+
+    // Publish messages via Connector
+    try {
+      await this.publish({
+        content: amp,
+      });
+    } catch (err) {
+      Logger.error("publishing failed", err, amp);
+    }
   }
 
   private handleError(error: Error) {
