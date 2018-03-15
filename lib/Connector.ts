@@ -4,6 +4,9 @@ import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 import Consumer from "./Consumer";
 import Producer from "./Producer";
 
+/**
+ * Initially connect to consumer and producer
+ */
 export default class Connector {
   private consumer: Consumer;
   private producer: Producer;

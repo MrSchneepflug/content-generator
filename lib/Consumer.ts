@@ -7,7 +7,6 @@ import ConsumerMessageInterface from "./interfaces/ConsumerMessageInterface";
 import LoggerInterface from "./interfaces/LoggerInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 import Logger from "./Logger";
-import Producer from "./Producer";
 
 export default class Consumer {
   private consumer: SinekConsumer;
@@ -28,9 +27,10 @@ export default class Consumer {
     }
   }
 
+  /**
+   * Initially connect to Consumer
+   */
   public async connect(): Promise<void> {
-    // @TODO check if topic exists
-
     try {
       await this.consumer.connect();
 
@@ -48,6 +48,9 @@ export default class Consumer {
     this.consumer.on("error", this.handleError);
   }
 
+  /**
+   * Handle consuming messages
+   */
   private async consume(
     message: ConsumerMessageInterface,
     callback: (error: Error | null) => void,
@@ -68,6 +71,9 @@ export default class Consumer {
     callback(error);
   }
 
+  /**
+   * Handle newly created messages
+   */
   private async handleMessage(message: ConsumerMessageInterface) {
     const ampli: Ampli = new Ampli({
       logger: Logger,
@@ -94,6 +100,9 @@ export default class Consumer {
     }
   }
 
+  /**
+   * Parse a message from Kafka and turn it into an object
+   */
   private parseMessage(message: ConsumerMessageInterface): ConsumerContentInterface | null {
     try {
       return JSON.parse(message.value);
@@ -104,6 +113,9 @@ export default class Consumer {
     return null;
   }
 
+  /**
+   * If there is an error, please report it
+   */
   private handleError(error: Error) {
     Logger.error(error);
   }
