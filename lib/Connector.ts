@@ -9,16 +9,18 @@ export default class Connector {
   private producer: Producer;
 
   constructor(config: ConfigInterface) {
-    this.consumer = new Consumer(this.public, config);
+    this.publish = this.publish.bind(this);
+
+    this.consumer = new Consumer(this.publish, config);
     this.producer = new Producer(config);
   }
 
-  public async connect() {
+  public async start(): Promise<void> {
     await this.consumer.connect();
     await this.producer.connect();
   }
 
-  private async public(message: ProducerMessageInterface) {
+  private async publish(message: ProducerMessageInterface): Promise<void> {
     await this.producer.add(message);
   }
 }
