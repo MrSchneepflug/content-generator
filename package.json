@@ -1,5 +1,5 @@
 {
-  "name": "content-generator",
+  "name": "knamp-content-generator",
   "version": "0.1.0",
   "description": "Consume HTML from Kafka messages, transform to AMP HTML, produce",
   "main": "dist/index.js",
