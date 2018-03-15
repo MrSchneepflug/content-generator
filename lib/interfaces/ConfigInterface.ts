@@ -1,11 +1,11 @@
 import LoggerInterface from "./LoggerInterface";
 
 export default interface ConfigInterface {
-  kafkaHost: string;
   consumeFrom: string;
   produceTo: string;
   groupId: string;
   clientName: string;
+  kafkaHost?: string;
   consumeWithBackpressure?: boolean;
   logger?: LoggerInterface | undefined;
   workerPerPartition?: number;

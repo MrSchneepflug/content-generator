@@ -13,6 +13,23 @@ export default class Producer {
     this.producer = new SinekProducer(config, 1);
 
     this.flush = this.flush.bind(this);
+    this.handleError = this.handleError.bind(this);
+
+    if (process.env.DEBUG === "*") {
+      Logger.info("setup producer done");
+    }
+  }
+
+  public async connect(): Promise<void> {
+    try {
+      await this.producer.connect();
+
+      Logger.info("Connected producer");
+    } catch (error) {
+      this.handleError(error);
+    }
+
+    this.producer.on("error", this.handleError);
   }
 
   public add(message: ProducerMessageInterface): void {
@@ -23,19 +40,13 @@ export default class Producer {
     }
   }
 
-  public async connect(): Promise<void> {
-    try {
-      await this.producer.connect();
-    } catch (error) {
-      this.handleError(error);
-    }
-
-    this.producer.on("error", this.handleError);
-  }
-
   private async flush(): Promise<void> {
     for (const message of Producer.messages) {
-      await this.produce(message);
+      try {
+        await this.produce(message);
+      } catch (error) {
+        Logger.error("while producing", error, message);
+      }
     }
 
     Producer.messages = [];
@@ -46,7 +57,12 @@ export default class Producer {
   }
 
   private async produce(message: ProducerMessageInterface): Promise<void> {
-    this.producer.send(this.config.produceTo, message);
+    try {
+      const messageString: string = JSON.stringify(message);
+      await this.producer.send(this.config.produceTo, messageString);
+    } catch (error) {
+      Logger.error("sending message failed", error, message);
+    }
   }
 
   private handleError(error: Error): void {
