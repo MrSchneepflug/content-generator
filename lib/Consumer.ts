@@ -84,9 +84,11 @@ export default class Consumer {
    * Handle newly created messages
    */
   private async handleMessage(message: ConsumerMessageInterface) {
-    const ampli: Ampli = new Ampli({
-      logger: Logger,
-    });
+    const ampli: Ampli = new Ampli(
+      Object.assign({
+        logger: Logger,
+      }, this.config.ampliOptions),
+    );
     let amp: string = "";
 
     const messageContent: ConsumerContentInterface = this.parseMessage(message);
