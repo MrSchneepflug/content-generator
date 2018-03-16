@@ -41,4 +41,5 @@ export default interface ConfigInterface {
     commitSync?: boolean;
     noBatchCommits?: boolean;
   };
+  ampliOptions?: object;
 }
