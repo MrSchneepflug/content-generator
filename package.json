@@ -7,7 +7,7 @@
   "author": "Hans Christian Reinl <info@drublic.de>",
   "license": "MIT",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/__tests__/index.js",
     "test": "jest",
     "test:watch": "yarn test --watch",
     "ts:lint": "tslint -c tslint.json '**/*.ts'",

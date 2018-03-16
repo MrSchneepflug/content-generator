@@ -34,4 +34,11 @@ export default interface ConfigInterface {
     ackTimeoutMs?: number,
     partitionerType?: number,
   };
+  consumerOptions?: {
+    batchSize?: number;
+    commitEveryNBatch?: number;
+    concurrency?: number;
+    commitSync?: boolean;
+    noBatchCommits?: boolean;
+  };
 }

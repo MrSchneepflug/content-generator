@@ -42,8 +42,14 @@ export default class Consumer {
       this.handleError(error);
     }
 
+    // Consume as JSON with callback
     try {
-      await this.consumer.consume(this.consume);
+      await this.consumer.consume(
+        this.consume,
+        true,
+        true,
+        this.config.consumerOptions,
+      );
     } catch (error) {
       this.handleError(error);
     }
@@ -83,12 +89,10 @@ export default class Consumer {
     });
     let amp: string = "";
 
-    const messageContent: ConsumerContentInterface | null = this.parseMessage(message);
+    const messageContent: ConsumerContentInterface = this.parseMessage(message);
 
     try {
-      if (messageContent) {
-        amp = await ampli.transform(messageContent.content);
-      }
+      amp = await ampli.transform(messageContent.content);
     } catch (err) {
       Logger.error("transformation with ampli failed", err);
     }
@@ -97,6 +101,7 @@ export default class Consumer {
     try {
       await this.publish({
         content: amp,
+        key: messageContent.key,
       });
     } catch (err) {
       Logger.error("publishing failed", err, amp);
@@ -106,14 +111,11 @@ export default class Consumer {
   /**
    * Parse a message from Kafka and turn it into an object
    */
-  private parseMessage(message: ConsumerMessageInterface): ConsumerContentInterface | null {
-    try {
-      return JSON.parse(message.value);
-    } catch (error) {
-      Logger.info("Cannot read message", error, message);
-    }
-
-    return null;
+  private parseMessage(message: ConsumerMessageInterface): ConsumerContentInterface {
+    return {
+      content: message.value.content,
+      key: message.value.key,
+    };
   }
 
   /**
