@@ -12,7 +12,6 @@ export default class Producer {
   constructor(public config: ConfigInterface) {
     this.producer = new SinekProducer(config, 1);
 
-    this.flush = this.flush.bind(this);
     this.handleError = this.handleError.bind(this);
 
     if (process.env.DEBUG === "*") {
@@ -38,40 +37,10 @@ export default class Producer {
   /**
    * Adding a new message object
    */
-  public add(message: ProducerMessageInterface): void {
-    Producer.messages.push(message);
-
-    if (!this.timeout) {
-      this.timeout = setTimeout(this.flush, this.config.produceFlushEveryMs);
-    }
-  }
-
-  /**
-   * Flushes messages to topic producer
-   */
-  private async flush(): Promise<void> {
-    for (const message of Producer.messages) {
-      try {
-        await this.produce(message);
-      } catch (error) {
-        Logger.error("while producing", error, message);
-      }
-    }
-
-    Producer.messages = [];
-
-    if (this.timeout) {
-      clearTimeout(this.timeout);
-    }
-  }
-
-  /**
-   * Produce a single message
-   */
-  private async produce(message: ProducerMessageInterface): Promise<void> {
+  public async add(message: ProducerMessageInterface): Promise<void> {
     try {
-      const messageString: string = JSON.stringify(message);
-      await this.producer.send(this.config.produceTo, messageString);
+      // With version = 1
+      await this.producer.buffer(this.config.produceTo, message.key, message, null, 1);
     } catch (error) {
       Logger.error("sending message failed", error, message);
     }
