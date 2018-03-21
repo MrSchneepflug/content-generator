@@ -6,7 +6,7 @@ Consume HTML from Kafka messages, transform to AMP HTML, produce.
 
 Install via yarn
 
-    yarn install knamp-content-provider
+    yarn install knamp-content-generator
 
 Then configure it and use it
 
