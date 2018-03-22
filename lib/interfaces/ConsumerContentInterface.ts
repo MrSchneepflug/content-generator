@@ -1,5 +1,5 @@
 export default interface ConsumerContentInterface {
-  key: string;
+  id: string;
   content: string;
   url: string;
 }

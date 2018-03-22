@@ -1,7 +1,7 @@
 export default interface ConsumerMessageInterface {
   topic: string;
   value: {
-    key: string;
+    id: string;
     content: string;
     url: string;
   };
