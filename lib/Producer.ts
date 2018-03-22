@@ -5,7 +5,6 @@ import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 import Logger from "./Logger";
 
 export default class Producer {
-  private static messages: ProducerMessageInterface[] = [];
   private producer: SinekProducer;
   private timeout: number | null = null;
 
