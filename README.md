@@ -6,7 +6,7 @@ Consume HTML from Kafka messages, transform to AMP HTML, produce.
 
 Install via yarn
 
-    yarn install knamp-content-provider
+    yarn install knamp-content-generator
 
 Then configure it and use it
 
@@ -23,7 +23,7 @@ ContentGenerator({
 
 ## Uses
 
-* [Sinek](https://github.com/nodefluent/node-sinek), connection and talking with Kafka
+* [Sinek](https://github.com/nodefluent/node-sinek), consuming and producing messages to and from Apache Kafka
 * [Ampli](https://github.com/knamp/ampli), transforms HTML to AMP
 
 ## License
