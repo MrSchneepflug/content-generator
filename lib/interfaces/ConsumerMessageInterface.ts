@@ -3,5 +3,6 @@ export default interface ConsumerMessageInterface {
   value: {
     key: string;
     content: string;
+    url: string;
   };
 }

@@ -94,7 +94,7 @@ export default class Consumer {
     const messageContent: ConsumerContentInterface = this.parseMessage(message);
 
     try {
-      amp = await ampli.transform(messageContent.content);
+      amp = await ampli.transform(messageContent.content, messageContent.url);
     } catch (err) {
       Logger.error("transformation with ampli failed", err);
     }
