@@ -13,12 +13,14 @@ Then configure it and use it
 ```javascript
 import ContentGenerator from "knamp-content-generator";
 
-ContentGenerator({
-  clientName: "generator-client",
-  consumeFrom: "generator-consume",
-  groupId: "generator-group",
-  produceTo: "produce-topic",
-});
+(async () => {
+  ContentGenerator({
+    clientName: "generator-client",
+    consumeFrom: "generator-consume",
+    groupId: "generator-group",
+    produceTo: "produce-topic",
+  });
+})();
 ```
 
 ## Uses
