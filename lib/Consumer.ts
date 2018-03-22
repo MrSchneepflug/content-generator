@@ -117,6 +117,7 @@ export default class Consumer {
     return {
       content: message.value.content,
       key: message.value.key,
+      url: message.value.url,
     };
   }
 
