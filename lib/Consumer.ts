@@ -15,7 +15,7 @@ export default class Consumer {
   private consumer: SinekConsumer;
 
   constructor(
-    private publish: (message: ProducerMessageInterface) => void,
+    private publish: (key: string, message: ProducerMessageInterface) => void,
     private config: ConfigInterface,
   ) {
     const { consumeFrom } = config;
@@ -44,12 +44,12 @@ export default class Consumer {
 
     // Consume as JSON with callback
     try {
-      await this.consumer.consume(
+      this.consumer.consume(
         this.consume,
         true,
         true,
         this.config.consumerOptions,
-      );
+      ).catch((error) => this.handleError(error));
     } catch (error) {
       this.handleError(error);
     }
@@ -101,9 +101,8 @@ export default class Consumer {
 
     // Publish messages via Connector
     try {
-      await this.publish({
+      await this.publish(message.key, {
         content: amp,
-        id: messageContent.id,
       });
     } catch (err) {
       Logger.error("publishing failed", err, amp);
@@ -116,7 +115,6 @@ export default class Consumer {
   private parseMessage(message: ConsumerMessageInterface): ConsumerContentInterface {
     return {
       content: message.value.content,
-      id: message.value.id,
       url: message.value.url,
     };
   }

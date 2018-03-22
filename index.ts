@@ -13,7 +13,7 @@ const defaultOptions = {
     fetchMaxBytes: 1024 * 1024,
     fetchMaxWaitMs: 10,
     fetchMinBytes: 1,
-    fromOffset: "latest",
+    fromOffset: "earliest",
     heartbeatInterval: 250,
     partitionerType: 3,
     protocol: ["roundrobin"],

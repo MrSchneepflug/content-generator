@@ -19,11 +19,11 @@ export default class Connector {
   }
 
   public async start(): Promise<void> {
-    await this.consumer.connect();
     await this.producer.connect();
+    await this.consumer.connect();
   }
 
-  private async publish(message: ProducerMessageInterface): Promise<void> {
-    await this.producer.add(message);
+  private async publish(key: string, message: ProducerMessageInterface): Promise<void> {
+    await this.producer.produce(key, message);
   }
 }

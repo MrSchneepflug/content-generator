@@ -36,10 +36,11 @@ export default class Producer {
   /**
    * Adding a new message object
    */
-  public async add(message: ProducerMessageInterface): Promise<void> {
+  public async produce(key: string, message: ProducerMessageInterface): Promise<void> {
     try {
       // With version = 1
-      await this.producer.buffer(this.config.produceTo, message.id, message, null, 1);
+      message.path = "/missing"; // TODO: make this set-able via transform callback from config
+      await this.producer.buffer(this.config.produceTo, key, message, null, 1);
     } catch (error) {
       Logger.error("sending message failed", error, message);
     }

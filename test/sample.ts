@@ -4,7 +4,7 @@ import ContentGenerator from "../";
   ContentGenerator({
     clientName: "generator-client",
     consumeFrom: "generator-consume",
-    groupId: "generator-group",
+    groupId: "generator-group2",
     produceTo: "produce-topic",
   });
 })();
