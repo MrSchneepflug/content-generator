@@ -1,4 +1,4 @@
 export default interface ProducerMessageInterface {
-  key: string;
+  id: string;
   content: string;
 }

@@ -103,7 +103,7 @@ export default class Consumer {
     try {
       await this.publish({
         content: amp,
-        key: messageContent.key,
+        id: messageContent.id,
       });
     } catch (err) {
       Logger.error("publishing failed", err, amp);
@@ -116,7 +116,7 @@ export default class Consumer {
   private parseMessage(message: ConsumerMessageInterface): ConsumerContentInterface {
     return {
       content: message.value.content,
-      key: message.value.key,
+      id: message.value.id,
       url: message.value.url,
     };
   }

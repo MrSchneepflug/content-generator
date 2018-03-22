@@ -39,7 +39,7 @@ export default class Producer {
   public async add(message: ProducerMessageInterface): Promise<void> {
     try {
       // With version = 1
-      await this.producer.buffer(this.config.produceTo, message.key, message, null, 1);
+      await this.producer.buffer(this.config.produceTo, message.id, message, null, 1);
     } catch (error) {
       Logger.error("sending message failed", error, message);
     }
