@@ -42,4 +42,13 @@ export default interface ConfigInterface {
     noBatchCommits?: boolean;
   };
   ampliOptions?: object;
+  "batch.num.messages"?: number;
+  "compression.codec"?: "snappy";
+  "dr_cb": boolean;
+  "event_cb": boolean;
+  "message.send.max.retries": number;
+  "queue.buffering.max.messages": number;
+  "queue.buffering.max.ms": number;
+  "retry.backoff.ms": number;
+  "socket.keepalive.enable": boolean;
 }
