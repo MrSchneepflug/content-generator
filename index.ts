@@ -1,3 +1,5 @@
+import * as deepmerge from "deepmerge";
+
 import ConfigInterface from "./lib/interfaces/ConfigInterface";
 
 import Connector from "./lib/Connector";
@@ -27,7 +29,7 @@ const defaultOptions = {
 };
 
 export default async (options: ConfigInterface) => {
-  const config: ConfigInterface = Object.assign({}, defaultOptions, options);
+  const config: ConfigInterface = deepmerge({}, defaultOptions, options);
 
   if (config.logger) {
     setLogger(config.logger);
