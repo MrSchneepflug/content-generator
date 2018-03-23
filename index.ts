@@ -1,4 +1,4 @@
-import * as deepmerge from "deepmerge";
+import * as merge from "lodash/merge";
 
 import ConfigInterface from "./lib/interfaces/ConfigInterface";
 
@@ -38,7 +38,7 @@ const defaultOptions = {
 };
 
 export default async (options: ConfigInterface) => {
-  const config: ConfigInterface = deepmerge(defaultOptions, options);
+  const config: ConfigInterface = merge(defaultOptions, options);
 
   if (config.logger) {
     setLogger(config.logger);
