@@ -27,7 +27,7 @@ const defaultOptions = {
 };
 
 export default async (options: ConfigInterface) => {
-  const config: ConfigInterface = Object.assign(defaultOptions, options);
+  const config: ConfigInterface = Object.assign({}, defaultOptions, options);
 
   if (config.logger) {
     setLogger(config.logger);
