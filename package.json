@@ -1,6 +1,6 @@
 {
   "name": "knamp-content-generator",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "Consume HTML from Kafka messages, transform to AMP HTML, produce",
   "main": "dist/index.js",
   "repository": "git@github.com:knamp/content-generator.git",
