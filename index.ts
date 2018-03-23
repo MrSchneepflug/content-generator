@@ -38,7 +38,7 @@ const defaultOptions = {
 };
 
 export default async (options: ConfigInterface) => {
-  const config: ConfigInterface = deepmerge({}, defaultOptions, options);
+  const config: ConfigInterface = deepmerge(defaultOptions, options);
 
   if (config.logger) {
     setLogger(config.logger);
