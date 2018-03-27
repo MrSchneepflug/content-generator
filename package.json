@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "ampli": "~0.6.0",
-    "lodash": "^4.17.5",
+    "lodash.merge": "^4.6.1",
     "log": "~1.4.0",
     "node-rdkafka": "~2.3.1",
     "sinek": "~6.15.0"
