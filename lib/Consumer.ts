@@ -77,7 +77,11 @@ export default class Consumer {
     }
 
     // Return this callback to receive further messages
-    callback(error);
+    try {
+      callback(error);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   /**
