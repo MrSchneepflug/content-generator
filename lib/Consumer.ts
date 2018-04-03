@@ -62,16 +62,22 @@ export default class Consumer {
    */
   private async consume(
     message: ConsumerMessageInterface,
-    callback: () => void,
+    callback: (error: Error | null) => void,
   ): Promise<void> {
+    let error: Error | null;
+
     try {
       await this.handleMessage(message);
+
+      error = null;
     } catch (producedError) {
       this.handleError(producedError);
+
+      error = producedError;
     }
 
     // Return this callback to receive further messages
-    callback();
+    callback(error);
   }
 
   /**
