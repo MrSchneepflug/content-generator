@@ -42,6 +42,7 @@ export default interface ConfigInterface {
     noBatchCommits?: boolean;
   };
   ampliOptions?: object;
+  ampliDecorators?: Array<(document: any, options?: any) => any>;
   "batch.num.messages"?: number;
   "compression.codec"?: "snappy";
   "dr_cb"?: boolean;

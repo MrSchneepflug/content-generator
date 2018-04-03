@@ -88,6 +88,7 @@ export default class Consumer {
       Object.assign({
         logger: Logger,
       }, this.config.ampliOptions),
+      this.config.ampliDecorators,
     );
     let amp: string = "";
 
