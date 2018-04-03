@@ -2,22 +2,23 @@ import Ampli, {
   ContextInterface,
   OptionsInterface,
 } from "ampli";
+import * as EventEmitter from "events";
 import { NConsumer as SinekConsumer } from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ConsumerContentInterface from "./interfaces/ConsumerContentInterface";
 import ConsumerMessageInterface from "./interfaces/ConsumerMessageInterface";
-import LoggerInterface from "./interfaces/LoggerInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
-import Logger from "./Logger";
 
-export default class Consumer {
+export default class Consumer extends EventEmitter {
   private consumer: SinekConsumer;
 
   constructor(
     private publish: (key: string, message: ProducerMessageInterface) => void,
     private config: ConfigInterface,
   ) {
+    super();
+
     const { consumeFrom } = config;
 
     this.consumer = new SinekConsumer(consumeFrom, config);
@@ -26,7 +27,7 @@ export default class Consumer {
     this.handleError = this.handleError.bind(this);
 
     if (process.env.DEBUG === "*") {
-      Logger.info("setup consumer done");
+      super.emit("info", "setup consumer done");
     }
   }
 
@@ -37,7 +38,7 @@ export default class Consumer {
     try {
       await this.consumer.connect();
 
-      Logger.info("Connected consumer");
+      super.emit("info", "Connected consumer");
     } catch (error) {
       this.handleError(error);
     }
@@ -89,9 +90,7 @@ export default class Consumer {
    */
   private async handleMessage(message: ConsumerMessageInterface) {
     const ampli: Ampli = new Ampli(
-      Object.assign({
-        logger: Logger,
-      }, this.config.ampliOptions),
+      this.config.ampliOptions,
       this.config.ampliDecorators,
     );
     let amp: string = "";
@@ -101,7 +100,7 @@ export default class Consumer {
     try {
       amp = await ampli.transform(messageContent.content, messageContent.url);
     } catch (err) {
-      Logger.error("transformation with ampli failed", err);
+      super.emit("error", err);
     }
 
     // Publish messages via Connector
@@ -110,7 +109,7 @@ export default class Consumer {
         content: amp,
       });
     } catch (err) {
-      Logger.error("publishing failed", err, amp);
+      this.handleError(err);
     }
   }
 
@@ -128,6 +127,6 @@ export default class Consumer {
    * If there is an error, please report it
    */
   private handleError(error: Error) {
-    Logger.error(error);
+    super.emit("error", error);
   }
 }
