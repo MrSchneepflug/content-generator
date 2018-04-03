@@ -1,20 +1,23 @@
+import * as EventEmitter from "events";
+
 import { NProducer as SinekProducer } from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
-import Logger from "./Logger";
 
-export default class Producer {
+export default class Producer extends EventEmitter {
   private producer: SinekProducer;
   private timeout: number | null = null;
 
   constructor(public config: ConfigInterface) {
+    super();
+
     this.producer = new SinekProducer(config, 1);
 
     this.handleError = this.handleError.bind(this);
 
     if (process.env.DEBUG === "*") {
-      Logger.info("setup producer done");
+      super.emit("info", "setup producer done");
     }
   }
 
@@ -25,7 +28,7 @@ export default class Producer {
     try {
       await this.producer.connect();
 
-      Logger.info("Connected producer");
+      super.emit("info", "Connected producer");
     } catch (error) {
       this.handleError(error);
     }
@@ -42,7 +45,7 @@ export default class Producer {
       message.path = "/missing"; // TODO: make this set-able via transform callback from config
       await this.producer.buffer(this.config.produceTo, key, message, null, 1);
     } catch (error) {
-      Logger.error("sending message failed", error, message);
+      this.handleError(error);
     }
   }
 
@@ -50,6 +53,6 @@ export default class Producer {
    * If there is an error, please report it
    */
   private handleError(error: Error): void {
-    Logger.error(error);
+    super.emit("error", error);
   }
 }

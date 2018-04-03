@@ -3,7 +3,6 @@ import * as merge from "lodash/merge";
 import ConfigInterface from "./lib/interfaces/ConfigInterface";
 
 import Connector from "./lib/Connector";
-import Logger, { set as setLogger } from "./lib/Logger";
 
 const defaultOptions = {
   "batch.num.messages": 1000000,
@@ -39,14 +38,9 @@ const defaultOptions = {
 
 export default async (options: ConfigInterface) => {
   const config: ConfigInterface = merge(defaultOptions, options);
-
-  if (config.logger) {
-    setLogger(config.logger);
-  }
-
-  Logger.info("Connecting...");
-
   const connect = new Connector(config);
 
   await connect.start();
+
+  return connect;
 };
