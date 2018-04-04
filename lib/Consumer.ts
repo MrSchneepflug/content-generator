@@ -1,7 +1,3 @@
-import Ampli, {
-  ContextInterface,
-  OptionsInterface,
-} from "ampli";
 import * as EventEmitter from "events";
 import { NConsumer as SinekConsumer } from "sinek";
 
@@ -89,24 +85,14 @@ export default class Consumer extends EventEmitter {
    * Handle newly created messages
    */
   private async handleMessage(message: ConsumerMessageInterface) {
-    const ampli: Ampli = new Ampli(
-      this.config.ampliOptions,
-      this.config.ampliDecorators,
-    );
-    let amp: string = "";
-
     const messageContent: ConsumerContentInterface = this.parseMessage(message);
-
-    try {
-      amp = await ampli.transform(messageContent.content, messageContent.url);
-    } catch (err) {
-      super.emit("error", err);
-    }
 
     // Publish messages via Connector
     try {
+      const content = await this.config.transformer(messageContent);
+
       await this.publish(message.key, {
-        content: amp,
+        content,
       });
     } catch (err) {
       this.handleError(err);

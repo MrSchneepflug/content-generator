@@ -1,4 +1,5 @@
 import ContentGenerator from "../";
+import ConsumerContentInterface from "../lib/interfaces/ConsumerContentInterface";
 
 (async () => {
   const generator = await ContentGenerator({
@@ -6,6 +7,7 @@ import ContentGenerator from "../";
     consumeFrom: "generator-consume",
     groupId: "generator-group2",
     produceTo: "produce-topic",
+    transformer: async (message: ConsumerContentInterface) => await message.content,
   });
 
   generator.on("error", console.error);
