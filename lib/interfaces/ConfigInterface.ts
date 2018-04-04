@@ -1,3 +1,4 @@
+import ConsumerContentInterface from "./ConsumerContentInterface";
 import LoggerInterface from "./LoggerInterface";
 
 export default interface ConfigInterface {
@@ -41,8 +42,7 @@ export default interface ConfigInterface {
     commitSync?: boolean;
     noBatchCommits?: boolean;
   };
-  ampliOptions?: object;
-  ampliDecorators?: Array<(document: any, options?: any) => any>;
+  transformer: (message: ConsumerContentInterface) => Promise<string>;
   "batch.num.messages"?: number;
   "compression.codec"?: "snappy";
   "dr_cb"?: boolean;

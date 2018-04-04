@@ -1,6 +1,6 @@
 # Content Generator
 
-Consume HTML from Kafka messages, transform to AMP HTML, produce.
+Consume HTML from Kafka messages, transform in any way, produce.
 
 ## Usage
 
@@ -19,6 +19,7 @@ import ContentGenerator from "knamp-content-generator";
     consumeFrom: "generator-consume",
     groupId: "generator-group",
     produceTo: "produce-topic",
+    tranformer: (transformThis: ConsumerContentInterface): Promise<string> => transformThis.content
   });
 
   generator.on("error", console.log)
@@ -29,7 +30,6 @@ import ContentGenerator from "knamp-content-generator";
 ## Uses
 
 * [Sinek](https://github.com/nodefluent/node-sinek), consuming and producing messages to and from Apache Kafka
-* [Ampli](https://github.com/knamp/ampli), transforms HTML to AMP
 
 ## License
 
