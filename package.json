@@ -16,7 +16,7 @@
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "ampli": "~0.6.0",
+    "ampli": "^0.7.0",
     "lodash.merge": "^4.6.1",
     "log": "~1.4.0",
     "node-rdkafka": "~2.3.1",
