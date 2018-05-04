@@ -23,7 +23,9 @@ export default class Connector extends EventEmitter {
     this.consumer = new Consumer(this.publish, config);
     this.producer = new Producer(config);
 
+    this.consumer.on("info", this.handleInfo.bind(this));
     this.consumer.on("error", this.handleError.bind(this));
+    this.producer.on("info", this.handleInfo.bind(this));
     this.producer.on("error", this.handleError.bind(this));
 
   }
@@ -39,5 +41,9 @@ export default class Connector extends EventEmitter {
 
   private handleError(error: Error): void {
     super.emit("error", error);
+  }
+
+  private handleInfo(info: any): void {
+    super.emit("info", info);
   }
 }
