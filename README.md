@@ -6,12 +6,12 @@ Consume HTML from Kafka messages, transform in any way, produce.
 
 Install via yarn
 
-    yarn install knamp-content-generator
+    yarn install @knamp/content-generator
 
 Then configure it and use it
 
 ```javascript
-import ContentGenerator from "knamp-content-generator";
+import ContentGenerator from "@knamp/content-generator";
 
 (async () => {
   const generator = ContentGenerator({
