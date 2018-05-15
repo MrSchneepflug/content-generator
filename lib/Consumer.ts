@@ -41,7 +41,7 @@ export default class Consumer extends EventEmitter {
 
     // Consume as JSON with callback
     try {
-      this.consumer.consume(
+      await this.consumer.consume(
         this.consume,
         true,
         true,

@@ -29,6 +29,7 @@ const defaultOptions = {
     ssl: false,
   },
   "produceFlushEveryMs": 1000,
+  "producerPartitionCount": 1,
   "queue.buffering.max.messages": 100000,
   "queue.buffering.max.ms": 1000,
   "retry.backoff.ms": 200,
