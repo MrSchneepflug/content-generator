@@ -10,33 +10,41 @@ import Producer from "./Producer";
  * Initially connect to consumer and producer
  */
 export default class Connector extends EventEmitter {
-  private consumer: Consumer;
-  private producer: Producer;
+  private consumer?: Consumer;
+  private producer?: Producer;
 
-  constructor(config: ConfigInterface) {
+  constructor(private config: ConfigInterface) {
     super();
 
-    super.emit("info", "Connecting...");
-
     this.publish = this.publish.bind(this);
+  }
 
-    this.consumer = new Consumer(this.publish, config);
-    this.producer = new Producer(config);
+  public setup(): void {
+    this.handleInfo("Connecting...");
+
+    this.consumer = new Consumer(this.publish, this.config);
+    this.producer = new Producer(this.config);
 
     this.consumer.on("info", this.handleInfo.bind(this));
     this.consumer.on("error", this.handleError.bind(this));
     this.producer.on("info", this.handleInfo.bind(this));
     this.producer.on("error", this.handleError.bind(this));
-
   }
 
   public async start(): Promise<void> {
-    await this.producer.connect();
-    await this.consumer.connect();
+    if (this.producer) {
+      await this.producer.connect();
+    }
+
+    if (this.consumer) {
+      await this.consumer.connect();
+    }
   }
 
   private async publish(key: string, message: ProducerMessageInterface): Promise<void> {
-    await this.producer.produce(key, message);
+    if (this.producer) {
+      await this.producer.produce(key, message);
+    }
   }
 
   private handleError(error: Error): void {

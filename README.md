@@ -24,6 +24,9 @@ import ContentGenerator from "knamp-content-generator";
 
   generator.on("error", console.log)
   generator.on("info", console.log)
+
+  generator.setup();
+  await generator.start();
 })();
 ```
 

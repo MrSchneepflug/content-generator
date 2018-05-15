@@ -44,6 +44,8 @@ export default class Producer extends EventEmitter {
       // With version = 1
       message.path = "/missing"; // TODO: make this set-able via transform callback from config
       await this.producer.buffer(this.config.produceTo, key, message, null, 1);
+
+      super.emit("info", `Message produced with id ${key}`);
     } catch (error) {
       this.handleError(error);
     }

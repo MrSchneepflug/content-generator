@@ -37,11 +37,8 @@ const defaultOptions = {
   "workerPerPartition": 1,
 };
 
-export default async (options: ConfigInterface) => {
+export default (options: ConfigInterface) => {
   const config: ConfigInterface = merge(defaultOptions, options);
-  const connect = new Connector(config);
 
-  await connect.start();
-
-  return connect;
+  return new Connector(config);
 };
