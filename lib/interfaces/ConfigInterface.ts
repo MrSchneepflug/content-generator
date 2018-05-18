@@ -11,6 +11,7 @@ export default interface ConfigInterface {
   logger?: LoggerInterface | undefined;
   workerPerPartition?: number;
   produceFlushEveryMs?: number;
+  producerPartitionCount?: number;
   options?: {
     ssl?: boolean,
     sslOptions?: {
