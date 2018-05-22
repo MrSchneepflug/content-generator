@@ -1,6 +1,7 @@
 import * as merge from "lodash/merge";
 
 import ConfigInterface from "./lib/interfaces/ConfigInterface";
+import ProducerMessageInterface from "./lib/interfaces/ProducerMessageInterface";
 
 import Connector from "./lib/Connector";
 
@@ -35,6 +36,8 @@ const defaultOptions = {
   "retry.backoff.ms": 200,
   "socket.keepalive.enable": true,
   "workerPerPartition": 1,
+
+  "getPath": (message: ProducerMessageInterface): string => message.url,
 };
 
 export default (options: ConfigInterface) => {

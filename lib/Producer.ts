@@ -42,7 +42,10 @@ export default class Producer extends EventEmitter {
   public async produce(key: string, message: ProducerMessageInterface): Promise<void> {
     try {
       // With version = 1
-      message.path = "/missing"; // TODO: make this set-able via transform callback from config
+      if (this.config.getPath) {
+        message.path = this.config.getPath(message);
+      }
+
       await this.producer.buffer(this.config.produceTo, key, message, null);
 
       super.emit("info", `Message produced with id ${key}`);
