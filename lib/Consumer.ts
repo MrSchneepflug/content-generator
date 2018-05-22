@@ -93,6 +93,7 @@ export default class Consumer extends EventEmitter {
 
       await this.publish(message.key, {
         content,
+        url: messageContent.url,
       });
     } catch (err) {
       this.handleError(err);

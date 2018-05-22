@@ -1,5 +1,6 @@
 import ConsumerContentInterface from "./ConsumerContentInterface";
 import LoggerInterface from "./LoggerInterface";
+import ProducerMessageInterface from "./ProducerMessageInterface";
 
 export default interface ConfigInterface {
   consumeFrom: string;
@@ -44,6 +45,7 @@ export default interface ConfigInterface {
     noBatchCommits?: boolean;
   };
   transformer: (message: ConsumerContentInterface) => Promise<string>;
+  getPath?: (message: ProducerMessageInterface) => string;
   "batch.num.messages"?: number;
   "compression.codec"?: "snappy";
   "dr_cb"?: boolean;
