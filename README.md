@@ -1,5 +1,7 @@
 # Content Generator
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/knamp/content-generator.svg)](https://greenkeeper.io/)
+
 Consume HTML from Kafka messages, transform in any way, produce.
 
 ## Usage
