@@ -85,11 +85,26 @@ export default class Consumer extends EventEmitter {
    * Handle newly created messages
    */
   private async handleMessage(message: ConsumerMessageInterface) {
+    super.emit(
+      "info",
+      `pre-parse - url: ${message.value.url} - content: ${message.value.content.substr(0, 50)} ...`
+    );
+
     const messageContent: ConsumerContentInterface = this.parseMessage(message);
 
     // Publish messages via Connector
     try {
+      super.emit(
+        "info",
+        `pre-transform - url: ${message.value.url} - content: ${messageContent.content.substr(0, 50)} ...`,
+      );
+
       const content = await this.config.transformer(messageContent);
+
+      super.emit(
+        "info",
+        `pre-publish - url: ${message.value.url} - content: ${content.substr(0, 50)} ...`,
+      );
 
       await this.publish(message.key, {
         content,
