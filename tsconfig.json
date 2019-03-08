@@ -3,6 +3,7 @@
       "module": "commonjs",
       "target": "ES2017",
       "sourceMap": true,
+      "declaration": true,
       "noImplicitReturns": true,
       "noFallthroughCasesInSwitch": true,
       "noImplicitAny": false,
