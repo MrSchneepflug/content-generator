@@ -1,9 +1,9 @@
 import * as merge from "lodash/merge";
 
-import ConfigInterface from "./lib/interfaces/ConfigInterface";
-import ProducerMessageInterface from "./lib/interfaces/ProducerMessageInterface";
+import ConfigInterface from "./interfaces/ConfigInterface";
+import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 
-import Connector from "./lib/Connector";
+import Connector from "./Connector";
 
 const defaultOptions = {
   "batch.num.messages": 1000000,

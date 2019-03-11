@@ -1,19 +1,33 @@
 {
-    "compilerOptions": {
-      "module": "commonjs",
-      "target": "ES2017",
-      "esModuleInterop": true,
-      "sourceMap": true,
-      "declaration": true,
-      "noImplicitReturns": true,
-      "noFallthroughCasesInSwitch": true,
-      "noImplicitAny": false,
-      "strict": true,
-      "outDir": "dist/"
-    },
-    "exclude": [
-      "./coverage",
-      "./node_modules",
-      "./dist"
-    ]
-  }
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2017",
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    //    "noUnusedParameters": true,
+    //    "noUnusedLocals": true,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+    "types": [
+      "node"
+    ],
+    "rootDir": "lib/",
+    "outDir": "dist/"
+  },
+  "exclude": [
+    "node_modules/",
+    "dist/",
+    "test/"
+  ]
+}
