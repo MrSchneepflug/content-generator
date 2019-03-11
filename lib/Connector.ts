@@ -41,9 +41,9 @@ export default class Connector extends EventEmitter {
     }
   }
 
-  private async publish(key: string, message: ProducerMessageInterface): Promise<void> {
+  private async publish(key: Buffer | string, message: ProducerMessageInterface): Promise<void> {
     if (this.producer) {
-      await this.producer.produce(key, message);
+      await this.producer.produce(Buffer.isBuffer(key) ? key.toString() : key, message);
     }
   }
 

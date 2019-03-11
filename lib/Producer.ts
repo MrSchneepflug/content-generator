@@ -12,7 +12,7 @@ export default class Producer extends EventEmitter {
   constructor(public config: ConfigInterface) {
     super();
 
-    this.producer = new SinekProducer(config, config.producerPartitionCount);
+    this.producer = new SinekProducer(config, null, config.producerPartitionCount);
 
     this.handleError = this.handleError.bind(this);
 
@@ -46,7 +46,7 @@ export default class Producer extends EventEmitter {
         message.path = this.config.getPath(message);
       }
 
-      await this.producer.buffer(this.config.produceTo, key, message, null);
+      await this.producer.buffer(this.config.produceTo, key, message);
 
       super.emit("info", `Message produced with id ${key}`);
     } catch (error) {
