@@ -1,23 +1,23 @@
 import EventEmitter from "events";
-import { NConsumer as SinekConsumer } from "sinek";
+import {KafkaMessage, NConsumer as SinekConsumer} from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ConsumerContentInterface from "./interfaces/ConsumerContentInterface";
-import ConsumerMessageInterface from "./interfaces/ConsumerMessageInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 
 export default class Consumer extends EventEmitter {
   private consumer: SinekConsumer;
 
   constructor(
-    private publish: (key: string, message: ProducerMessageInterface) => void,
+    private publish: (key: Buffer | string, message: ProducerMessageInterface) => void,
     private config: ConfigInterface,
   ) {
     super();
 
     const { consumeFrom } = config;
 
-    this.consumer = new SinekConsumer(consumeFrom, config);
+    // @todo: revert this "arrayification" when https://github.com/nodefluent/node-sinek/pull/102 is accepted
+    this.consumer = new SinekConsumer([consumeFrom], config);
 
     this.consume = this.consume.bind(this);
     this.handleError = this.handleError.bind(this);
@@ -54,12 +54,20 @@ export default class Consumer extends EventEmitter {
     this.consumer.on("error", this.handleError);
   }
 
+  private async consume(message: KafkaMessage | KafkaMessage[], callback: (error: any) => void): Promise<void> {
+    if (Array.isArray(message)) {
+      message.map((m: KafkaMessage) => this.consumeSingle(m, callback));
+    } else {
+      return this.consumeSingle(message, callback);
+    }
+  }
+
   /**
    * Handle consuming messages
    */
-  private async consume(
-    message: ConsumerMessageInterface,
-    callback: (error: Error | null) => void,
+  private async consumeSingle(
+    message: KafkaMessage,
+    callback: (error: any) => void,
   ): Promise<void> {
     let error: Error | null;
 
@@ -84,7 +92,7 @@ export default class Consumer extends EventEmitter {
   /**
    * Handle newly created messages
    */
-  private async handleMessage(message: ConsumerMessageInterface) {
+  private async handleMessage(message: KafkaMessage) {
     super.emit(
       "info",
       `pre-parse - url: ${message.value.url} - content: ${message.value.content.substr(0, 50)} ...`,
@@ -118,7 +126,7 @@ export default class Consumer extends EventEmitter {
   /**
    * Parse a message from Kafka and turn it into an object
    */
-  private parseMessage(message: ConsumerMessageInterface): ConsumerContentInterface {
+  private parseMessage(message: KafkaMessage): ConsumerContentInterface {
     return {
       content: message.value.content,
       url: message.value.url,
