@@ -2,7 +2,7 @@
   "name": "@knamp/content-generator",
   "version": "2.2.0",
   "description": "Consume HTML from Kafka messages, transform in any way, produce",
-  "main": "dist/lib/index.js",
+  "main": "lib/index.ts",
   "repository": "git@github.com:knamp/content-generator.git",
   "author": "Hans Christian Reinl <info@drublic.de>",
   "license": "MIT",
