@@ -87,7 +87,7 @@ export default class Consumer extends EventEmitter {
   private async handleMessage(message: ConsumerMessageInterface) {
     super.emit(
       "info",
-      `pre-parse - url: ${message.value.url} - content: ${message.value.content.substr(0, 50)} ...`
+      `pre-parse - url: ${message.value.url} - content: ${message.value.content.substr(0, 50)} ...`,
     );
 
     const messageContent: ConsumerContentInterface = this.parseMessage(message);
