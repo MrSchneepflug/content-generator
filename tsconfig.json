@@ -8,12 +8,6 @@
     "sourceMap": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    //    "noUnusedParameters": true,
-    //    "noUnusedLocals": true,
-    "strictPropertyInitialization": true,
-    "strictNullChecks": true,
-    "noImplicitAny": false,
-    "noImplicitThis": true,
     "experimentalDecorators": true,
     "lib": [
       "dom",

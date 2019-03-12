@@ -1,4 +1,4 @@
-import {merge} from "lodash/merge";
+import {merge} from "lodash";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";

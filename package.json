@@ -2,26 +2,23 @@
   "name": "@knamp/content-generator",
   "version": "2.2.0",
   "description": "Consume HTML from Kafka messages, transform in any way, produce",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "repository": "git@github.com:knamp/content-generator.git",
   "author": "Hans Christian Reinl <info@drublic.de>",
   "license": "MIT",
   "scripts": {
-    "start": "yarn test",
-    "test": "ts-node test/sample.ts",
-    "ts:lint": "tslint -c tslint.json '**/*.ts'",
-    "ts:build": "rm -rf dist/ && tsc",
-    "ts:watch": "yarn ts:build --watch",
-    "build": "yarn ts:build",
+    "lint": "tslint '**/*.ts'",
+    "build": "rm -rf dist/ && tsc",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "lodash.merge": "^4.6.1",
+    "lodash": "^4.17.11",
     "log": "~1.4.0",
     "node-rdkafka": "~2.3.1",
     "sinek": "^6.15.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.122",
     "@types/node": "~9.4.6",
     "concurrently": "~3.5.1",
     "ts-node": "^6.0.3",
