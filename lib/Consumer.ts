@@ -1,9 +1,11 @@
 import EventEmitter from "events";
-import {KafkaMessage, NConsumer as SinekConsumer} from "sinek";
+import {KafkaMessage, NConsumer as SinekConsumer, SortedMessageBatch} from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ConsumerContentInterface from "./interfaces/ConsumerContentInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
+
+import {isKafkaMessage, Message} from "./typeguards";
 
 export default class Consumer extends EventEmitter {
   private consumer: SinekConsumer;
@@ -16,8 +18,7 @@ export default class Consumer extends EventEmitter {
 
     const { consumeFrom } = config;
 
-    // @todo: revert this "arrayification" when https://github.com/nodefluent/node-sinek/pull/102 is accepted
-    this.consumer = new SinekConsumer([consumeFrom], config);
+    this.consumer = new SinekConsumer(consumeFrom, config);
 
     this.consume = this.consume.bind(this);
     this.handleError = this.handleError.bind(this);
@@ -41,12 +42,7 @@ export default class Consumer extends EventEmitter {
 
     // Consume as JSON with callback
     try {
-      await this.consumer.consume(
-        this.consume,
-        true,
-        true,
-        this.config.consumerOptions,
-      ).catch((error) => this.handleError(error));
+      await this.consumer.consume(this.consume, true, true, this.config.consumerOptions);
     } catch (error) {
       this.handleError(error);
     }
@@ -54,11 +50,13 @@ export default class Consumer extends EventEmitter {
     this.consumer.on("error", this.handleError);
   }
 
-  private async consume(message: KafkaMessage | KafkaMessage[], callback: (error: any) => void): Promise<void> {
+  private consume(message: Message, callback: (error: any) => void): void {
     if (Array.isArray(message)) {
-      message.map((m: KafkaMessage) => this.consumeSingle(m, callback));
+      message.forEach((kafkaMessage: KafkaMessage) => this.consumeSingle(kafkaMessage, callback));
+    } else if (isKafkaMessage(message)) {
+      this.consumeSingle(message, callback);
     } else {
-      return this.consumeSingle(message, callback);
+      this.consumeBatch(message, callback);
     }
   }
 
@@ -89,30 +87,33 @@ export default class Consumer extends EventEmitter {
     }
   }
 
+  private consumeBatch(batch: SortedMessageBatch, callback: (error: any) => void): void {
+    for (const topic in batch) {
+      if (!batch.hasOwnProperty(topic)) {
+        continue;
+      }
+
+      for (const partition in batch[topic]) {
+        if (!batch[topic].hasOwnProperty(partition)) {
+          continue;
+        }
+
+        batch[topic][partition].forEach((message: KafkaMessage) => {
+          this.consumeSingle(message, callback);
+        });
+      }
+    }
+  }
+
   /**
    * Handle newly created messages
    */
   private async handleMessage(message: KafkaMessage) {
-    super.emit(
-      "info",
-      `pre-parse - url: ${message.value.url} - content: ${message.value.content.substr(0, 50)} ...`,
-    );
-
     const messageContent: ConsumerContentInterface = this.parseMessage(message);
 
     // Publish messages via Connector
     try {
-      super.emit(
-        "info",
-        `pre-transform - url: ${message.value.url} - content: ${messageContent.content.substr(0, 50)} ...`,
-      );
-
       const content = await this.config.transformer(messageContent);
-
-      super.emit(
-        "info",
-        `pre-publish - url: ${message.value.url} - content: ${content.substr(0, 50)} ...`,
-      );
 
       await this.publish(message.key, {
         content,

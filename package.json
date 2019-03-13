@@ -7,7 +7,7 @@
   "author": "Hans Christian Reinl <info@drublic.de>",
   "license": "MIT",
   "scripts": {
-    "lint": "tslint '**/*.ts'",
+    "lint": "tslint -c tslint.json '**/*.ts'",
     "build": "rm -rf dist/ && tsc",
     "prepublishOnly": "yarn build"
   },
