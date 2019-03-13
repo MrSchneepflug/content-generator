@@ -40,6 +40,7 @@ const defaultOptions = {
   "getPath": (message: ProducerMessageInterface): string => message.url,
 };
 
+export {default as ConsumerContentInterface} from "./interfaces/ConsumerContentInterface";
 export default (options: ConfigInterface) => {
   const config: ConfigInterface = merge(defaultOptions, options);
 
