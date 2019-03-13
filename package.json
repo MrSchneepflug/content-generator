@@ -1,6 +1,6 @@
 {
   "name": "@knamp/content-generator",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Consume HTML from Kafka messages, transform in any way, produce",
   "main": "dist/index.js",
   "repository": "git@github.com:knamp/content-generator.git",
