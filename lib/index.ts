@@ -3,46 +3,42 @@ import {merge} from "lodash";
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 
+import {BatchConfig, KafkaConsumerConfig, KafkaProducerConfig} from "sinek";
 import Connector from "./Connector";
 
-const defaultOptions = {
-  "batch.num.messages": 1000000,
-  "compression.codec": "snappy",
-  "consumeWithBackpressure": true,
-  "dr_cb": true,
-  "event_cb": true,
-  "kafkaHost": "127.0.0.1:9092",
-  "message.send.max.retries": 10,
-  "options": {
-    ackTimeoutMs: 100,
-    autoCommit: true,
-    autoCommitIntervalMs: 1000,
-    fetchMaxBytes: 1024 * 1024,
-    fetchMaxWaitMs: 10,
-    fetchMinBytes: 1,
-    fromOffset: "earliest",
-    heartbeatInterval: 250,
-    partitionerType: 3,
-    protocol: ["roundrobin"],
-    requireAcks: 1,
-    retryMinTimeout: 250,
-    sessionTimeout: 8000,
-    ssl: false,
-  },
-  "produceFlushEveryMs": 1000,
-  "producerPartitionCount": 1,
-  "queue.buffering.max.messages": 100000,
-  "queue.buffering.max.ms": 1000,
-  "retry.backoff.ms": 200,
-  "socket.keepalive.enable": true,
-  "workerPerPartition": 1,
+const defaultConfig = {
+  getPath: (message: ProducerMessageInterface): string => message.url,
+};
 
-  "getPath": (message: ProducerMessageInterface): string => message.url,
+const defaultConsumerConfig: KafkaConsumerConfig = {
+  groupId: "amp-generator",
+};
+
+const defaultProducerConfig: KafkaProducerConfig = {
+  clientName: "amp-generator",
+};
+
+const defaultBatchConfig: BatchConfig = {
+  batchSize: 5,
+  commitEveryNBatch: 1,
+  concurrency: 1,
+  commitSync: false,
+  noBatchCommits: false,
+  manualBatching: true,
+  sortedManualBatch: false,
 };
 
 export {default as ConsumerContentInterface} from "./interfaces/ConsumerContentInterface";
-export default (options: ConfigInterface) => {
-  const config: ConfigInterface = merge(defaultOptions, options);
-
-  return new Connector(config);
+export default (
+  config: ConfigInterface,
+  consumerConfig: KafkaConsumerConfig,
+  producerConfig: KafkaProducerConfig,
+  batchConfig: BatchConfig,
+) => {
+  return new Connector(
+    merge(defaultConfig, config),
+    merge(defaultConsumerConfig, consumerConfig),
+    merge(defaultProducerConfig, producerConfig),
+    merge(defaultBatchConfig, batchConfig),
+  );
 };

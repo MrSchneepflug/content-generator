@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import {KafkaMessage, NConsumer as SinekConsumer, SortedMessageBatch} from "sinek";
+import {BatchConfig, KafkaConsumerConfig, KafkaMessage, NConsumer as SinekConsumer, SortedMessageBatch} from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ConsumerContentInterface from "./interfaces/ConsumerContentInterface";
@@ -11,14 +11,15 @@ export default class Consumer extends EventEmitter {
   private consumer: SinekConsumer;
 
   constructor(
-    private publish: (key: Buffer | string, message: ProducerMessageInterface) => void,
-    private config: ConfigInterface,
+    private readonly consumeFrom: string,
+    private readonly config: ConfigInterface,
+    private readonly consumerConfig: KafkaConsumerConfig,
+    private readonly batchConfig: BatchConfig,
+    private readonly publish: (key: Buffer | string, message: ProducerMessageInterface) => void,
   ) {
     super();
 
-    const { consumeFrom } = config;
-
-    this.consumer = new SinekConsumer(consumeFrom, config);
+    this.consumer = new SinekConsumer(consumeFrom, consumerConfig);
 
     this.consume = this.consume.bind(this);
     this.handleError = this.handleError.bind(this);
@@ -42,7 +43,7 @@ export default class Consumer extends EventEmitter {
 
     // Consume as JSON with callback
     try {
-      await this.consumer.consume(this.consume, true, true, this.config.consumerOptions);
+      await this.consumer.consume(this.consume, true, true, this.batchConfig);
     } catch (error) {
       this.handleError(error);
     }

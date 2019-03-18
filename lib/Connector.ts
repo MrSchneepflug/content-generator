@@ -3,6 +3,7 @@ import EventEmitter from "events";
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 
+import {BatchConfig, KafkaConsumerConfig, KafkaProducerConfig} from "sinek";
 import Consumer from "./Consumer";
 import Producer from "./Producer";
 
@@ -13,7 +14,12 @@ export default class Connector extends EventEmitter {
   private consumer?: Consumer;
   private producer?: Producer;
 
-  constructor(private config: ConfigInterface) {
+  constructor(
+    private config: ConfigInterface,
+    private consumerConfig: KafkaConsumerConfig,
+    private producerConfig: KafkaProducerConfig,
+    private batchConfig: BatchConfig,
+  ) {
     super();
 
     this.publish = this.publish.bind(this);
@@ -22,8 +28,15 @@ export default class Connector extends EventEmitter {
   public setup(): void {
     this.handleInfo("Connecting...");
 
-    this.consumer = new Consumer(this.publish, this.config);
-    this.producer = new Producer(this.config);
+    this.consumer = new Consumer(
+      this.config.consumeFrom,
+      this.config,
+      this.consumerConfig,
+      this.batchConfig,
+      this.publish,
+    );
+
+    this.producer = new Producer(this.config.produceTo, this.config, this.producerConfig);
 
     this.consumer.on("info", this.handleInfo.bind(this));
     this.consumer.on("error", this.handleError.bind(this));

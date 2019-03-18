@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 
-import { NProducer as SinekProducer } from "sinek";
+import {KafkaProducerConfig, NProducer as SinekProducer} from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
@@ -9,10 +9,14 @@ export default class Producer extends EventEmitter {
   private producer: SinekProducer;
   private timeout: number | null = null;
 
-  constructor(public config: ConfigInterface) {
+  constructor(
+    private readonly produceTo: string,
+    private readonly config: ConfigInterface,
+    private readonly producerConfig: KafkaProducerConfig,
+  ) {
     super();
 
-    this.producer = new SinekProducer(config, null, config.producerPartitionCount);
+    this.producer = new SinekProducer(producerConfig, null, config.producerPartitionCount || 1);
 
     this.handleError = this.handleError.bind(this);
 
@@ -46,7 +50,7 @@ export default class Producer extends EventEmitter {
         message.path = this.config.getPath(message);
       }
 
-      await this.producer.buffer(this.config.produceTo, key, message);
+      await this.producer.buffer(this.produceTo, key, message);
 
       super.emit("info", `Message produced with id ${key}`);
     } catch (error) {
