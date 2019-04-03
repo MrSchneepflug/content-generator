@@ -11,7 +11,20 @@ const defaultConfig = {
 };
 
 const defaultConsumerConfig: KafkaConsumerConfig = {
-  groupId: "amp-generator",
+  kafkaHost: "127.0.0.1:9092",
+  // metadata.broker.list MUST be set via kafkaHost-property. If we set it here manually, it will be used as
+  // an overwrite.
+  //
+  // @ts-ignore
+  noptions: {
+    "group.id": "content-generator",
+    "api.version.request": true,
+    "socket.keepalive.enable": true,
+    "enable.auto.commit": false,
+  },
+  tconf: {
+    "auto.offset.reset": "earliest",
+  },
 };
 
 const defaultProducerConfig: KafkaProducerConfig = {
