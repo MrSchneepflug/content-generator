@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import {BatchConfig, KafkaConsumerConfig, KafkaMessage, NConsumer as SinekConsumer, SortedMessageBatch} from "sinek";
+import {KafkaConsumerConfig, KafkaMessage, NConsumer as SinekConsumer, SortedMessageBatch} from "sinek";
 
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ConsumerContentInterface from "./interfaces/ConsumerContentInterface";
@@ -14,7 +14,6 @@ export default class Consumer extends EventEmitter {
     private readonly consumeFrom: string,
     private readonly config: ConfigInterface,
     private readonly consumerConfig: KafkaConsumerConfig,
-    private readonly batchConfig: BatchConfig,
     private readonly publish: (key: Buffer | string, message: ProducerMessageInterface) => void,
   ) {
     super();
@@ -22,7 +21,7 @@ export default class Consumer extends EventEmitter {
     this.consumer = new SinekConsumer(consumeFrom, consumerConfig);
 
     this.consume = this.consume.bind(this);
-    this.handleError = this.handleError.bind(this);
+    this.consumer.on("error", (error) => super.emit("error", error));
 
     if (process.env.DEBUG === "*") {
       super.emit("info", "setup consumer done");
@@ -38,20 +37,13 @@ export default class Consumer extends EventEmitter {
 
       super.emit("info", "Connected consumer");
     } catch (error) {
-      this.handleError(error);
+      super.emit("error", error);
     }
 
-    // Consume as JSON with callback
-    try {
-      await this.consumer.consume(this.consume, true, true, this.batchConfig);
-    } catch (error) {
-      this.handleError(error);
-    }
-
-    this.consumer.on("error", this.handleError);
+    this.consumer.consume(this.consume, true, true).catch((error) => super.emit("error", error));
   }
 
-  private consume(message: Message, callback: (error: any) => void): void {
+  private consume(message: Message, callback: (error?: any) => void): void {
     if (Array.isArray(message)) {
       message.forEach((kafkaMessage: KafkaMessage) => this.consumeSingle(kafkaMessage, callback));
     } else if (isKafkaMessage(message)) {
@@ -66,7 +58,7 @@ export default class Consumer extends EventEmitter {
    */
   private async consumeSingle(
     message: KafkaMessage,
-    callback: (error: any) => void,
+    callback: (error?: any) => void,
   ): Promise<void> {
     let error: Error | null;
 
@@ -75,16 +67,16 @@ export default class Consumer extends EventEmitter {
 
       error = null;
     } catch (producedError) {
-      this.handleError(producedError);
+      super.emit("error", producedError);
 
       error = producedError;
     }
 
     // Return this callback to receive further messages
     try {
-      callback(error);
+      callback();
     } catch (error) {
-      this.handleError(error);
+      super.emit("error", error);
     }
   }
 
@@ -121,7 +113,7 @@ export default class Consumer extends EventEmitter {
         url: messageContent.url,
       });
     } catch (err) {
-      this.handleError(err);
+      super.emit("error", err);
     }
   }
 
@@ -133,12 +125,5 @@ export default class Consumer extends EventEmitter {
       content: message.value.content,
       url: message.value.url,
     };
-  }
-
-  /**
-   * If there is an error, please report it
-   */
-  private handleError(error: Error) {
-    super.emit("error", error);
   }
 }

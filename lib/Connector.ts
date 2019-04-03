@@ -3,7 +3,7 @@ import EventEmitter from "events";
 import ConfigInterface from "./interfaces/ConfigInterface";
 import ProducerMessageInterface from "./interfaces/ProducerMessageInterface";
 
-import {BatchConfig, KafkaConsumerConfig, KafkaProducerConfig} from "sinek";
+import {KafkaConsumerConfig, KafkaProducerConfig} from "sinek";
 import Consumer from "./Consumer";
 import Producer from "./Producer";
 
@@ -18,7 +18,6 @@ export default class Connector extends EventEmitter {
     private config: ConfigInterface,
     private consumerConfig: KafkaConsumerConfig,
     private producerConfig: KafkaProducerConfig,
-    private batchConfig: BatchConfig,
   ) {
     super();
 
@@ -32,7 +31,6 @@ export default class Connector extends EventEmitter {
       this.config.consumeFrom,
       this.config,
       this.consumerConfig,
-      this.batchConfig,
       this.publish,
     );
 
